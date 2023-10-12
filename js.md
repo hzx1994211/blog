@@ -155,6 +155,115 @@ newObj[key] = val;
     }
     console.log(resetList(jsonData), '---jsonData')
 
+##图片压缩
+// 将base64转换为blob
+const convertBase64UrlToBlob = (urlData) => {
+  let arr = urlData.split(',')
+  let mime = arr[0].match(/:(.*?);/)[1]
+  let bstr = atob(arr[1])
+  let n = bstr.length
+  let u8arr = new Uint8Array(n)
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n)
+  }
+  return new Blob([u8arr], {
+    type: mime
+  })
+}
+/**
+ * 压缩图片
+ * file => 文件
+ * type => url,bold,files
+ */ 
+const compressImage = (file, type='files',imgQuality = 0.5) => {
+  return new Promise(resolve => {
+    const reader = new FileReader()
+
+    reader.onload = (e => {
+      const image = new Image()
+      image.src = e.target.result;
+      image.onload = (imageEvent) => {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const width = image.width * imgQuality
+        const height = image.height * imgQuality
+        canvas.width = width;
+        canvas.height = height;
+        context.clearRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL(file.type);
+        const blobData = convertBase64UrlToBlob(dataUrl);
+        //将blob格式转换为file格式
+        let files = new File([blobData], file.name, {type: file.type,uid:file.uid, lastModified: Date.now()})
+        let res = files
+        if(type == 'url') res = dataUrl
+        if(type == 'bold') res = blobData
+        resolve(res)
+      }
+    });
+    reader.readAsDataURL(file);
+  })
+}
+
+
+##获取当前日期
+const getDay = (times = 0, isTime = false) => {
+  // 格式化日期  年月日
+  let date = new Date();
+  if (times > 0) date = new Date(times)
+  let year = date.getFullYear();
+
+  let month = date.getMonth() + 1; //月
+  month = month < 10 ? '0' + month : month;
+
+  // let day = date.getDay(); //每周的第几天
+  let day = date.getDate(); //每周的第几天
+  day = day < 10 ? '0' + day : day;
+
+  let hour = date.getHours(); // 时
+  hour = hour < 10 ? '0' + hour : hour;
+
+  let mini = date.getMinutes(); // 分
+  mini = mini < 10 ? '0' + mini : mini;
+
+  let s = date.getSeconds(); //秒
+  s = s < 10 ? '0' + s : s;
+
+  return isTime ? `${year}-${month}-${day} ${hour}:${mini}:${s}` : `${year}-${month}-${day}`; //返回排好序的新对象
+};
+
+
+##获取当前日期
+/**
+ * 数组去重
+ */
+const repeatArray = (array, key) => {
+  const map = new Map()
+  const newArr = []
+  array && array.forEach(item => {
+    if (!map.has(item[key])) {
+      newArr.push(item)
+      map.set(item[key], true)
+    }
+  });
+  return newArr
+}
+
+
+##入参排序
+const objKeySort = (arys) => {
+  if (!arys) return {}
+  //先用Object内置类的keys方法获取要排序对象的属性名，再利用Array原型上的sort方法对获取的属性名进行排序，newkey是一个数组
+  const newkey = Object.keys(arys).sort();
+  const newObj = {}; //创建一个新的对象，用于存放排好序的键值对
+  for (let i = 0; i < newkey.length; i++) {
+    //遍历newkey数组
+    newObj[newkey[i]] = arys[newkey[i]] ? arys[newkey[i]] : '';
+    //向新创建的对象中按照排好的顺序依次增加键值对
+  }
+  return newObj; //返回排好序的新对象
+}
+
 
 
 

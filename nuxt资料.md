@@ -24,5 +24,15 @@ async asyncData({ app }) {
     console.log(app.$cookies.get("token"));
 },
 https://blog.csdn.net/AK852369/article/details/115792191 //参考资料
+
+
+解析cookie
+const getCookie = (strCookie) => {
+  let arrCookie = decodeURIComponent(strCookie).split(';');
+  let vuex = arrCookie.find(item => (item.split('=')[0]).trim() === 'vuex');
+  let cookie = vuex && vuex.split('=')
+  return cookie ? JSON.parse(cookie[1]) : '';
+}
+
 ```
 
