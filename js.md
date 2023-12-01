@@ -1,4 +1,3 @@
-
 ```js
 ##二进制转utf-8
 //设置缓冲器
@@ -174,7 +173,7 @@ const convertBase64UrlToBlob = (urlData) => {
  * 压缩图片
  * file => 文件
  * type => url,bold,files
- */ 
+ */
 const compressImage = (file, type='files',imgQuality = 0.5) => {
   return new Promise(resolve => {
     const reader = new FileReader()
@@ -266,6 +265,34 @@ const objKeySort = (arys) => {
 
 
 
+##富文本颜色rgb转16进制
+/**
+ * content => 富文本
+ */
+
+const textChange = (content) => {
+  let text = content;
+  //rgb颜色 转16进制
+  function fixColor(name, value) {
+    if (/color/i.test(name) && /rgba?/.test(value)) {
+      console.log(value);
+      var array = value.split(",");
+      if (array.length > 3) {
+        return "";
+      }
+      value = "#";
+      for (var i = 0, color; color = array[i++];) {
+        color = parseInt(color.replace(/[^\d]/gi, ''), 10).toString(16);
+        value += color.length == 1 ? "0" + color : color;
+      }
+      value = value.toUpperCase();
+    }
+    return value;
+  }
+  text = text.replace(/rgba?\(\s?\d+\s?,\s?\d+\s?,\s?\d+\s?\)/g, function () {
+    return fixColor('color', arguments[0]);
+  })
+  return text
+}
 
 ```
-
