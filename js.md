@@ -296,3 +296,26 @@ const textChange = (content) => {
 }
 
 ```
+##表情解析
+/**
+ * msgInfo => 解析的内容 如 ：返回发[qinqin]过火发过火
+ */
+
+    handleEmoji(msgInfo) {
+      let msgContent
+      let reg = /\[.+?\]/g;
+      msgContent = msgInfo.msgContent.replace(reg, function (str) {
+        //如果是表情 则判断表情包是否存在
+        if (emojiInfor.emojiTitleList.includes(str)) {
+          for (let i = 0; i < emojiInfor.emojiList.length; i++) {
+            if (emojiInfor.emojiList[i].title === str) {
+              let url = emojiInfor.emojiList[i].url;
+              return `<img src="${url}" class="emo-img"  />`
+            }
+          }
+        } else {
+          return str
+        }
+      })
+      return msgContent
+    },
