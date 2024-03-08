@@ -295,7 +295,7 @@ const textChange = (content) => {
   return text
 }
 
-```
+
 ##表情解析
 /**
  * msgInfo => 解析的内容 如 ：返回发[qinqin]过火发过火
@@ -319,3 +319,5 @@ const textChange = (content) => {
       })
       return msgContent
     },
+
+```
